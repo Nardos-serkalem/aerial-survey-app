@@ -1,0 +1,537 @@
+{% extends "base.html" %}
+{% block title %}Submit Flight Report{% endblock %}
+{% block content %}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Aerial Survey Flight Report</title>
+    <style>
+        body {
+            background-color: white;
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px;
+            position: relative;
+        }
+
+        #main-form-container {
+            background-color: white;
+            border: 1px solid rgba(0, 0, 0, 0.1);
+            border-radius: 12px;
+            padding: 25px;
+            margin: 20px auto;
+            max-width: 95%;
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.15);
+        }
+
+        table {
+            background-color: white;
+            width: 95%;
+            margin: 15px auto;
+            border-collapse: collapse;
+        }
+
+        th,
+        td {
+            background-color: white;
+            border: 1px solid rgba(0, 0, 0, 0.12);
+            padding: 10px;
+            text-align: left;
+            color: black;
+        }
+
+        input,
+        textarea,
+        select {
+            background-color: #f0f0f0;
+            border: 1px solid #ccc;
+            padding: 8px;
+            border-radius: 6px;
+            width: 100%;
+            box-sizing: border-box;
+            color: black;
+            transition: all 0.3s ease;
+        }
+
+        input:focus,
+        textarea:focus {
+            outline: none;
+            box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.25);
+        }
+
+        button {
+            background-color: #ff9f3f;
+            color: white;
+            border: none;
+            padding: 10px 25px;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        button:hover {
+            background-color: #bf6c0c;
+        }
+
+
+        body.dark-mode {
+            background-color: #000000;
+            color: white;
+        }
+
+        body.dark-mode #main-form-container {
+            background-color: #000000;
+            border-color: #000000;
+            color: white;
+        }
+
+        body.dark-mode table {
+            background-color: #000000;
+        }
+
+        body.dark-mode th,
+        body.dark-mode td {
+            background-color: #555;
+            border-color: #666;
+            color: white;
+        }
+
+        body.dark-mode input,
+        body.dark-mode textarea,
+        body.dark-mode select {
+            background-color: #666;
+            border-color: #777;
+            color: white;
+        }
+
+        body.dark-mode button {
+            background-color: #555;
+            color: white;
+            border-color: #666;
+        }
+
+        body.dark-mode button:hover {
+            background-color: #777;
+        }
+
+        .draft-watermark {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) rotate(-45deg);
+            font-size: 6em;
+            color: rgba(0, 0, 0, 0.08);
+            pointer-events: none;
+            z-index: -1;
+            font-family: Arial, sans-serif;
+            user-select: none;
+        }
+
+        .logo {
+            max-width: 200px;
+            height: auto;
+            display: block;
+            margin: 0 auto 15px;
+            filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1));
+        }
+
+        header {
+            text-align: center;
+        }
+
+        header h1,
+        header h2,
+        header h3 {
+            margin: 10px 0;
+            width: 100%;
+            color: black;
+        }
+
+        body.dark-mode header h1,
+        body.dark-mode header h2,
+        body.dark-mode header h3 {
+            color: white;
+        }
+
+        #darkModeToggle {
+            position: left;
+            top: 15px;
+            right: 15px;
+            padding: 8px 15px;
+            background-color: #f0f0f0;
+            border: 1px solid #ccc;
+            color: black;
+            border-radius: 6px;
+            cursor: pointer;
+            z-index: 1000;
+        }
+
+        #darkModeToggle:hover {
+            background-color: #e0e0e0;
+        }
+
+        body.dark-mode #darkModeToggle {
+            background-color: #666;
+            border-color: #777;
+            color: white;
+        }
+
+        body.dark-mode #darkModeToggle:hover {
+            background-color: #777;
+        }
+
+        #messages {
+            position: fixed;
+            top: 60px;
+            right: 20px;
+            z-index: 1000;
+        }
+
+        .message {
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 5px;
+            animation: slideIn 0.3s ease-out;
+        }
+
+        .message.success {
+            background-color: rgba(46, 204, 113, 0.9);
+            color: white;
+        }
+
+        .message.error {
+            background-color: rgba(231, 76, 60, 0.9);
+            color: white;
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateX(100%);
+            }
+
+            to {
+                transform: translateX(0);
+            }
+        }
+        #realTimeData {
+            margin-top: 30px;
+            background-color: white;
+            border-radius: 8px;
+            padding: 20px;
+        }
+
+        .flight-card {
+            background-color: #f9f9f9;
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 6px;
+        }
+
+        .entry {
+            background-color: #fafafa;
+            padding: 10px;
+            margin: 5px 0;
+            border-radius: 4px;
+        }
+
+        body.dark-mode #realTimeData {
+            background-color: #444;
+        }
+
+        body.dark-mode .flight-card {
+            background-color: #555;
+            color: white;
+        }
+
+        body.dark-mode .entry {
+            background-color: #666;
+            color: white;
+        }
+        #flightSummary {
+            margin-top: 20px;
+            padding: 15px;
+            background-color: #f0f0f0;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        #flightSummary h2 {
+            margin-top: 0;
+            color: #333;
+        }
+
+        #flightSummary p {
+            margin: 5px 0;
+            color: #555;
+        }
+
+        body.dark-mode #flightSummary {
+            background-color: #555;
+            color: white;
+        }
+
+        body.dark-mode #flightSummary h2,
+        body.dark-mode #flightSummary p {
+            color: white;
+        }
+
+        #addEntryBtn {
+            background-color: #ff9f3f;
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 6px;
+            cursor: pointer;
+            margin-top: 10px;
+            transition: background-color 0.3s ease;
+        }
+
+        #addEntryBtn:hover {
+            background-color: #24356d;
+        }
+
+        #flightAreasTable thead th,
+        #flightAreasTable tbody td {
+            text-align: center;
+        }
+
+        #addAreaBtn {
+            background-color: #ff9f3f;
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 6px;
+            cursor: pointer;
+            margin-top: 10px;
+            transition: background-color 0.3s ease;
+        }
+
+        #addAreaBtn:hover {
+            background-color: #24356d;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="draft-watermark">DRAFT</div>
+    <div id="main-form-container">
+        <header>
+            <img src="{{ url_for('static', filename='flight_data/ssgi.png') }}" alt="Company Logo" class="logo">
+            <h1>SPACE SCIENCE AND GEOSPATIAL INSTITUTE</h1>
+            <h2>የስፔስ ሳይንስ እና ጂኦስፓሻል ኢንስቲትዩት</h2>
+            <h3>AERIAL SURVEY FLIGHT REPORT SYSTEM</h3>
+        </header>
+
+        <div id="messages"></div>
+        <form id="flightDataForm" method="POST" action="{{ url_for('views.submit') }}">
+            <table>
+                <tr>
+                    <td>Project Name & Block No.</td>
+                    <td><input type="text" id="project_name" name="project_name" required value=""></td>
+                    <td>Flight No Day</td>
+                    <td><input type="number" name="flight_No_Day" required value=""></td>
+                    <td>Flight Date</td>
+                    <td><input type="date" id="flight_date" name="flight_date" value=""></td>
+
+                </tr>
+                <tr>
+                    <td>Operators</td>
+                    <td><input type="text" id="Operators" name="Operators" required value=""></td>
+                    <td>Pilot</td>
+                    <td><input type="text" id="pilot" name="pilot" required value="peter and eric"></td>
+                    <td>Departure:</td>
+                    <td><input type="text" id="departure" name="departure" value="AA"></td>
+                </tr>
+                <tr>
+                    <td>Overlap (%)</td>
+                    <td><input type="number" id="overlap" name="overlap" required value=""></td>
+                    <td>GSD (cm)</td>
+                    <td><input type="text" id="gsd" name="gsd" required value=""></td>
+                    <td>Aircraft</td>
+                    <td><input type="text" id="aircraft" name="aircraft" value=""></td>
+                </tr>
+                <tr>
+                    <td>Navigation System</td>
+                    <td><input type="text" id="navigation_system" name="navigation_system" value="Applanix POSTrack"></td>
+                            <td>Mount</td>
+                            <td>
+                                <select id="mount" name="mount">
+                                    <option value="GSM 4000" {% if some_variable_for_mount == 'GSM 4000' %}selected{% endif %}>GSM 4000</option>
+                                    <option value="GSM 3000" {% if some_variable_for_mount == 'GSM 3000' %}selected{% endif %}>GSM 3000</option>
+                                    </select>
+                            </td>
+                    <td>IMU</td>
+                    <td><input type="text" id="imu" name="imu" value=""></td>
+                </tr>
+                <tr>
+                    <td>Camera</td>
+                    <td>
+                        <select id="camera" name="camera">
+                            <option value="UCE 1100" {%if some_variable_for_mount == 'UCE 1100' %}seleted{% endif %}>UCE 1100</option>
+                            <option value="UCE 1200" {%if some_variable_for_mount == 'UCE 1200' %}seleted{% endif %}>UCE 1100</option>
+                           </option>
+                        </select>
+                    </td>
+                    <td>Serial No</td>
+                    <td><input type="text" id="serial_no" name="serial_no" value="U-C-E-1-8081-0137"></td>
+                    <td>Focal Length</td>
+                    <td><input type="text" id="focal_length" name="focal_length" value=""></td>
+                </tr>
+                <tr>
+                    <td>GPS Data Logging Time</td>
+                    <td><input type="time" id="gps_data_logging_time" name="gps_data_logging_time" value=""></td>
+                    <td>Sun Angle</td>
+                    <td><input type="text" id="sun_angle" name="sun_angle" value=""></td>
+                    <td>None</td>
+                    <td><input type="text" id="none" name="none" value=""></td>
+                </tr>
+                <tr>
+                    <td>Internal POS Data Code</td>
+                    <td><input type="text" id="internal_pos_data_code" name="internal_pos_data_code" value=""></td>
+                    <td>Aperture</td>
+                    <td><input type="text" id="aperture" name="aperture" value="F6.7"></td>
+                    <td>Shutter Speed</td>
+                    <td><input type="text" id="shutter_speed" name="shutter_speed" value=""></td>
+                </tr>
+                <tr>
+                    <td>ISO</td>
+                    <td><input type="text" id="iso" name="iso" value=""></td>
+                    <td>FMC</td>
+                    <td><input type="text" id="fmc" name="fmc" value=""></td>
+                    <td>IBD</td>
+                    <td><input type="text" id="ibd" name="ibd" value=""></td>
+                </tr>
+                <tr>
+                    <td>Engine Start</td>
+                    <td><input type="time" id="engine_start" name="engine_start" value=""></td>
+                    <td>Start Movement</td>
+                    <td><input type="time" id="start_movement" name="start_movement" value=""></td>
+                    <td>Take off</td>
+                    <td><input type="time" id="take_off" name="take_off" value=""></td>
+                </tr>
+                <tr>
+                    <td>Landing</td>
+                    <td><input type="time" id="landing" name="landing" value=""></td>
+                    <td>Stop Movement</td>
+                    <td><input type="time" id="stop_movement" name="stop_movement" value=""></td>
+                    <td>Shutdown</td>
+                    <td><input type="time" id="shutdown" name="shutdown" value=""></td>
+                </tr>
+            </table>
+
+            <h3>Flight Entries</h3>
+            <table id="entriesTable">
+                <thead>
+                    <tr>
+                        <th>Time of Entry</th>
+                        <th>Time of End</th>
+                        <th>Turning Time</th>
+                        <th>Run</th>
+                        <th>Heading</th>
+                        <th>Dir.</th>
+                        <th>Photo Numbers</th>
+                        <th>Qty.</th>
+                        <th>Remarks</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for entry in entries %}
+                    <tr>
+                        <td><input type="time" name="time_of_entry[]" value="{{ entry.time_of_entry }}"></td>
+                        <td><input type="time" name="time_of_end[]" value="{{ entry.time_of_end }}"></td>
+                        <td><input type="number" name="turning_time[]" value="{{ entry.turning_time }}"></td>
+                        <td><input type="number" name="run[]" value="{{ entry.run }}"></td>
+                        <td><input type="number" name="heading[]" value="{{ entry.heading }}"></td>
+                        <td><input type="text" name="dir[]" value="{{ entry.dir }}"></td>
+                        <td><input type="text" name="photo_numbers[]" value="{{ entry.photo_numbers }}"></td>
+                        <td><input type="number" name="qty[]" value="{{ entry.qty }}"></td>
+                        <td><input type="text" name="remarks_entry[]" value="{{ entry.remarks_entry }}"></td>
+                    </tr>
+                    {% endfor %}
+                    <tr id="newEntryRow">
+                        <td><input type="time" name="time_of_entry[]" step="60"></td>
+                        <td><input type="time" name="time_of_end[]" step="60"></td>
+                        <td><input type="number" name="turning_time[]"></td>
+                        <td><input type="number" name="run[]"></td>
+                        <td><input type="number" name="heading[]"></td>
+                        <td><input type="text" name="dir[]"></td>
+                        <td><input type="text" name="photo_numbers[]"></td>
+                        <td><input type="number" name="qty[]"></td>
+                        <td><input type="text" name="remarks_entry[]"></td>
+                    </tr>
+                </tbody>
+            </table>
+            <button type="button" class="btn btn-success" onclick="addFlightEntry()">Add Entry</button>
+
+            <table>
+                <tr>
+                    <td>Weather:</td>
+                    <td><input type="text" name="weather"></td>
+                </tr>
+                <tr>
+                    <td>Remarks:</td>
+                    <td><textarea name="remarks"></textarea></td>
+                </tr>
+                <tr>
+                    <td>Signature:</td>
+                    <td><input type="text" name="signature"></td>
+                </tr>
+            </table>
+            <button type="submit">Submit</button> 
+        </form>
+
+        <script>
+            document.getElementById('flightDataForm').addEventListener('submit', async (e) => {
+                e.preventDefault();
+                const form = e.target;
+                const submitBtn = form.querySelector('button[type="submit"]');
+                const messages = document.getElementById('messages');
+
+                try {
+                    submitBtn.disabled = true;
+                    submitBtn.textContent = 'Submitting...';
+
+                    const formData = new FormData(form);
+                    const response = await fetch('/submit', {
+                        method: 'POST',
+                        body: formData,
+                    });
+
+                    const data = await response.json();
+
+                    if (response.ok && data.success) {
+                        messages.innerHTML = '<div class="message success">' + data.message + '</div>';
+                        setTimeout(() => { messages.innerHTML = ''; }, 3000);
+                        form.reset();
+                    } else {
+                        messages.innerHTML = '<div class="message error">' + data.error + '</div>';
+                    }
+                } catch (error) {
+                    console.error('Submission error:', error);
+                    messages.innerHTML = '<div class="message error">An unexpected error occurred.</div>';
+                } finally {
+                    submitBtn.disabled = false;
+                    submitBtn.textContent = 'Submit';
+                }
+            });
+
+            function addFlightEntry() {
+                const table = document.getElementById('entriesTable').getElementsByTagName('tbody')[0];
+                const newRow = document.createElement('tr');
+                newRow.innerHTML = `
+                    <td><input type="time" name="time_of_entry[]" step="60"></td>
+                    <td><input type="time" name="time_of_end[]" step="60"></td>
+                    <td><input type="number" name="turning_time[]"></td>
+                    <td><input type="number" name="run[]"></td>
+                    <td><input type="number" name="heading[]"></td>
+                    <td><input type="text" name="dir[]"></td>
+                    <td><input type="text" name="photo_numbers[]"></td>
+                    <td><input type="number" name="qty[]"></td>
+                    <td><input type="text" name="remarks_entry[]"></td>
+                `;
+                table.appendChild(newRow);
+            }
+        </script>
+    </div>
+</body>
+{% endblock %}

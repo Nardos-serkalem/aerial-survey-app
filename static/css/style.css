@@ -1,0 +1,242 @@
+.form-group {
+    margin-bottom: 15px;
+}
+
+input[type="email"],
+input[type="text"],
+input[type="password"] {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box;
+}
+
+button[type="submit"] {
+    background-color: #f0a61c;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+button[type="submit"]:hover {
+    background-color: #f0a61c;
+}
+
+body {
+    margin: 0;
+    padding: 0;
+    font-family: sans-serif;
+    background-color: #f0f0f0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    background-image: linear-gradient(to bottom, #f0f0f0, #e0e0e0);
+}
+
+.auth-nav {
+    position: fixed;
+    top: 0;
+    right: 0;
+    display: flex;
+    padding: 10px;
+    z-index: 100;
+}
+
+.auth-nav a {
+    margin-left: 10px;
+    padding: 10px 15px;
+    text-decoration: none;
+    color: #333;
+    border-radius: 5px;
+    background-color: #fff;
+    border: 1px solid #ddd;
+    transition: background-color 0.3s ease, color 0.3s ease;
+    font-size: 1rem;
+}
+
+.auth-nav a:hover {
+    background-color: #f0f0f0;
+    color: #222;
+    border-color: #ccc;
+}
+
+.auth-nav a.btn-primary {
+    background-color: #f0a61c;
+    color: white;
+    border-color: #f0a61c;
+}
+
+.auth-nav a.btn-primary:hover {
+    background-color: #f0a61c;
+    border-color: #f0a61c;
+}
+
+.auth-nav a.btn-outline-light {
+    background-color: transparent;
+    color: #333;
+    border-color: #ddd;
+}
+
+.auth-nav a.btn-outline-light:hover {
+    background-color: #f0f0f0;
+    color: #333;
+    border-color: #ccc;
+}
+
+.container {
+    background-color: rgba(255, 255, 255, 0.8);
+    padding: 30px;
+    border-radius: 12px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    width: 90%;
+    max-width: 400px;
+    margin-top: 80px;
+    transition: box-shadow 0.3s ease;
+}
+
+.container:hover {
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+}
+
+.container h2 {
+    margin-bottom: 20px;
+    color: #2c3e50;
+    font-size: 2rem;
+}
+
+.container form {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+}
+
+.container form input {
+    padding: 12px;
+    margin-bottom: 15px;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+    font-size: 1rem;
+}
+
+.container form input:focus {
+    outline: none;
+    border-color: #4CAF50;
+    box-shadow: 0 0 5px rgba(76, 175, 80, 0.3);
+}
+
+.container form input[type="submit"] {
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    padding: 12px 20px;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+    font-size: 1.1rem;
+    margin-top: 10px;
+}
+
+.container form input[type="submit"]:hover {
+    background-color: #45a049;
+    transform: translateY(-2px);
+}
+
+.container p {
+    margin-top: 15px;
+    font-size: 0.9rem;
+    color: #555;
+}
+
+.container p a {
+    color: #f0a61c;
+    text-decoration: none;
+    transition: color 0.2s ease;
+}
+
+.container p a:hover {
+    color: #f0a61c;
+}
+
+@media (max-width: 768px) {
+    .container {
+        width: 95%;
+        padding: 20px;
+    }
+
+    .container form input {
+        padding: 10px;
+        font-size: 0.95rem;
+    }
+
+    .container h2 {
+        font-size: 2.5rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .container {
+        width: 100%;
+        border-radius: 0;
+        box-shadow: none;
+        padding: 15px;
+    }
+
+    .auth-nav a {
+        font-size: 0.9rem;
+        padding: 8px 12px;
+    }
+
+    .container h2 {
+        font-size: 2rem;
+    }
+
+    .container form input {
+        font-size: 0.9rem;
+    }
+
+    .container form input[type="submit"] {
+        font-size: 1rem;
+    }
+}
+/* Base styles (Desktop and larger tablets) */
+body {
+    font-family: Arial, sans-serif;
+    font-size: 16px;
+  }
+  
+  .container {
+    padding: 30px;
+  }
+  
+  .table-responsive {
+    overflow-x: auto;
+  }
+  
+  /* Tablets (portrait) */
+  @media (max-width: 992px) {
+    .container {
+      padding: 20px;
+    }
+  
+    .table th,
+    .table td {
+      font-size: 14px;
+    }
+  
+    h3, h4, h5 {
+      font-size: 1.2rem;
+    }
+  
+    .text-end {
+      text-align: left !important;
+      margin-top: 10px;
+    }
+  }
+  
+ 

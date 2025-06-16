@@ -1,0 +1,215 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="container py-5">
+  <h3 class="mb-4">Submitted Flights</h3>
+
+  <div class="mb-4">
+    <input type="text" id="search-input" class="form-control" placeholder="Search flights by Flight No Day">
+  </div>
+
+  <div id="flight-list">
+    {% for flight in flights %}
+    <div class="flight-item mb-5 p-4 border rounded bg-light" data-flight-no="{{ flight.flight_No_Day }}">
+      <div class="row">
+        <div class="col-md-6">
+          <table class="table table-bordered table-sm">
+            <thead class="table-light"><tr><th colspan="2">Project Info</th></tr></thead>
+            <tbody>
+              <tr><th>Project Name</th><td>{{ flight.project_name }}</td></tr>
+              <tr><th>Flight No Day</th><td>{{ flight.flight_No_Day }}</td></tr>
+              <tr><th>Flight Date</th><td>{{ flight.flight_date }}</td></tr>
+              <tr><th>Pilot</th><td>{{ flight.pilot }}</td></tr>
+              <tr><th>Operators</th><td>{{ flight.Operators }}</td></tr>
+              <tr><th>Departure</th><td>{{ flight.departure }}</td></tr>
+              <tr><th>Weather</th><td>{{ flight.weather }}</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="col-md-6">
+          <table class="table table-bordered table-sm">
+            <thead class="table-light"><tr><th colspan="2">Technical Info</th></tr></thead>
+            <tbody>
+              <tr><th>Camera</th><td>{{ flight.camera }}</td></tr>
+              <tr><th>Mount</th><td>{{ flight.mount }}</td></tr>
+              <tr><th>IMU</th><td>{{ flight.imu }}</td></tr>
+              <tr><th>Navigation System</th><td>{{ flight.navigation_system }}</td></tr>
+              <tr><th>Serial No</th><td>{{ flight.serial_no }}</td></tr>
+              <tr><th>Focal Length</th><td>{{ flight.focal_length }}</td></tr>
+              <tr><th>GSD (cm)</th><td>{{ flight.gsd }}</td></tr>
+              <tr><th>Sun Angle</th><td>{{ flight.sun_angle }}</td></tr>
+              <tr><th>Internal Pos Data Code</th><td>{{ flight.internal_pos_data_code }}</td></tr>
+              <tr><th>ISO</th><td>{{ flight.iso }}</td></tr>
+              <tr><th>Aperture</th><td>{{ flight.aperture }}</td></tr>
+              <tr><th>Shutter Speed</th><td>{{ flight.shutter_speed }}</td></tr>
+              <tr><th>FMC</th><td>{{ flight.fmc }}</td></tr>
+              <tr><th>IBD</th><td>{{ flight.ibd }}</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-md-6">
+          <table class="table table-bordered table-sm">
+            <thead class="table-light"><tr><th colspan="2">Timeline</th></tr></thead>
+            <tbody>
+              <tr><th>GPS Logging</th><td>{{ flight.gps_data_logging_time }}</td></tr>
+              <tr><th>Engine Start</th><td>{{ flight.engine_start }}</td></tr>
+              <tr><th>Start Movement</th><td>{{ flight.start_movement }}</td></tr>
+              <tr><th>Take Off</th><td>{{ flight.take_off }}</td></tr>
+              <tr><th>Landing</th><td>{{ flight.landing }}</td></tr>
+              <tr><th>Stop Movement</th><td>{{ flight.stop_movement }}</td></tr>
+              <tr><th>Shutdown</th><td>{{ flight.shutdown }}</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <h5 class="mt-4">Flight Entries</h5>
+      <div class="table-responsive">
+        <table class="table table-bordered table-sm">
+          <thead class="table-light">
+            <tr>
+              <th>#</th>
+              <th>Entry Time</th>
+              <th>End Time</th>
+              <th>Turning Time</th>
+              <th>Run</th>
+              <th>Heading</th>
+              <th>Dir</th>
+              <th>Photos</th>
+              <th>Qty</th>
+              <th>Remarks</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% set prev_end = None %}
+            {% set last_turning_gap = 'N/A' %}
+            {% for e in flight.entries %}
+              {% if prev_end and e.time_of_entry %}
+                {% set diff = (e.time_of_entry | to_datetime('%H:%M')) - (prev_end | to_datetime('%H:%M')) %}
+                {% set gap = diff.seconds // 60 %}
+                {% set last_turning_gap = gap %}
+              {% else %}
+                {% set gap = 'N/A' %}
+              {% endif %}
+              <tr>
+                <td>{{ loop.index }}</td>
+                <td>{{ e.time_of_entry }}</td>
+                <td>{{ e.time_of_end }}</td>
+                <td>{{ gap }}</td>
+                <td>{{ e.turning_time }}</td>
+                <td>{{ e.run }}</td>
+                <td>{{ e.heading }}</td>
+                <td>{{ e.dir }}</td>
+                <td>{{ e.photo_numbers }}</td>
+                <td>{{ e.qty }}</td>
+                <td>{{ e.remarks_entry }}</td>
+              </tr>
+              {% set prev_end = e.time_of_end %}
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+
+      <h5 class="mt-4">Summary</h5>
+      <table class="table table-bordered table-sm w-100">
+        <tbody>
+          <tr><th>Start → Stop Movement</th><td>{{ flight.start_stop_movement }}</td></tr>
+          <tr><th>Takeoff → Landing</th><td>{{ flight.takeoff_landing }}</td></tr>
+          <tr><th>Engine Start → Shutdown</th><td>{{ flight.engine_start_shutdown }}</td></tr>
+          {% if last_turning_gap != 'N/A' %}
+          <tr><th>Turning Point (Last Gap)</th><td>{{ last_turning_gap }} min</td></tr>
+          {% endif %}
+          <tr><th>Remarks</th><td>{{ flight.remarks }}</td></tr>
+          <tr><th>Signature</th><td>{{ flight.signature }}</td></tr>
+        </tbody>
+      </table>
+
+      <div class="text-end no-print">
+        <button class="btn btn-sm btn-danger" onclick="downloadPDF(this)">Export PDF</button>
+        <button class="btn btn-sm btn-primary" onclick="exportToWord(this)">Export Word</button>
+        <button class="btn btn-sm btn-success" onclick="exportToCSV(this)">Export CSV</button>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+</div>
+
+<style>
+@media print {
+  .no-print {
+    display: none !important;
+  }
+}
+</style>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script>
+function downloadPDF(btn) {
+  const container = btn.closest('.flight-item');
+  const clone = container.cloneNode(true);
+  const win = window.open('', '_blank');
+  win.document.write('<html><head><title>Flight Report</title>');
+  win.document.write('<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">');
+  win.document.write('<style>.no-print{display:none !important}</style>');
+  win.document.write('</head><body>');
+  win.document.write(clone.outerHTML);
+  win.document.write('</body></html>');
+  win.document.close();
+  win.print();
+}
+
+function exportToWord(btn) {
+  const container = btn.closest('.flight-item').cloneNode(true);
+  container.querySelector('.no-print').remove();
+  const html = `
+    <html xmlns:o='urn:schemas-microsoft-com:office:office' xmlns:w='urn:schemas-microsoft-com:office:word' xmlns='http://www.w3.org/TR/REC-html40'>
+    <head><meta charset='utf-8'><title>Export Word</title></head><body>${container.outerHTML}</body></html>`;
+  const blob = new Blob(['\ufeff', html], { type: 'application/msword' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = 'flight_report.doc';
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+}
+
+function exportToCSV(btn) {
+  const container = btn.closest('.flight-item');
+  const rows = container.querySelectorAll('table');
+  let csv = [];
+
+  rows.forEach(table => {
+    const tableRows = table.querySelectorAll('tr');
+    tableRows.forEach(row => {
+      const cols = row.querySelectorAll('th, td');
+      const line = [...cols].map(cell => `"${cell.innerText.trim()}"`).join(',');
+      csv.push(line);
+    });
+    csv.push('');
+  });
+
+  const csvContent = csv.join('\n');
+  const blob = new Blob([csvContent], { type: 'text/csv' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = 'flight_report.csv';
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+}
+
+document.getElementById('search-input').addEventListener('input', function () {
+  const searchTerm = this.value.toLowerCase();
+  const flights = document.querySelectorAll('.flight-item');
+
+  flights.forEach(flight => {
+    const flightNo = flight.getAttribute('data-flight-no').toLowerCase();
+    flight.style.display = flightNo.includes(searchTerm) ? '' : 'none';
+  });
+});
+</script>
+{% endblock %}

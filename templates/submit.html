@@ -1,0 +1,77 @@
+<!-- for future-->
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Flight Submission</title>
+    <script>
+        function isOnline() {
+            return navigator.onLine;
+        }
+        function saveOfflineData(form) {
+            const formData = new FormData(form);
+            const obj = {};
+            formData.forEach((val, key) => {
+                if (!obj[key]) obj[key] = [];
+                obj[key].push(val);
+            });
+            const existing = JSON.parse(localStorage.getItem('offline_submissions') || '[]');
+            existing.push(obj);
+            localStorage.setItem('offline_submissions', JSON.stringify(existing));
+            alert("Offline: Data saved locally. It will sync when you're online.");
+        }
+        async function syncOfflineData() {
+            const stored = JSON.parse(localStorage.getItem('offline_submissions') || '[]');
+            if (stored.length === 0) return;
+
+            for (const data of stored) {
+                const flat = new URLSearchParams();
+                Object.entries(data).forEach(([key, vals]) => {
+                    vals.forEach(val => flat.append(key, val));
+                });
+
+                try {
+                    const response = await fetch('/submit', {
+                        method: 'POST',
+                        body: flat
+                    });
+                    if (response.ok) {
+                        console.log("Offline data synced!");
+                    } else {
+                        throw new Error("Sync failed");
+                    }
+                } catch (e) {
+                    console.warn("Still offline or error syncing.");
+                    return;
+                }
+            }
+            localStorage.removeItem('offline_submissions');
+            alert("Offline data successfully synced.");
+        }
+        window.addEventListener('load', () => {
+            if (isOnline()) {
+                syncOfflineData();
+            }
+        });
+        function handleFormSubmit(event) {
+            event.preventDefault();
+            const form = event.target;
+
+            if (isOnline()) {
+                form.submit();  
+            } else {
+                saveOfflineData(form);
+            }
+        }
+    </script>
+</head>
+<body>
+    <h1>Flight Data Form</h1>
+    <form method="POST" action="/submit" onsubmit="handleFormSubmit(event)">
+        <input type="text" name="project_name" placeholder="Project Name" required><br>
+        <input type="text" name="pilot" placeholder="Pilot" required><br>
+        <input type="date" name="flight_date" required><br>
+        <br><button type="submit">Submit</button>
+    </form>
+</body>
+</html>

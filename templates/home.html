@@ -1,0 +1,48 @@
+{% extends 'base.html' %}
+
+{% block title %}Welcome - Aerial Survey System{% endblock %}
+
+{% block content %}
+<style>
+    body {
+        background: url("{{ url_for('static', filename='flight_data/2.jpg') }}") no-repeat center center fixed;
+        background-size: cover;
+        animation: backgroundFade 20s infinite alternate;
+    }
+
+    @keyframes backgroundFade {
+        from { filter: brightness(90%); }
+        to { filter: brightness(100%); }
+    }
+
+    .navy-blue-btn {
+        background-color: #001f3f;
+        color: white;
+    }
+
+    .navy-blue-btn:hover {
+        background-color: #003366;
+        color: white;
+    }
+
+    .overlay {
+        background-color: rgba(255, 255, 255, 0.85);
+        padding: 2rem;
+        border-radius: 1rem;
+    }
+</style>
+
+<div class="d-flex flex-column justify-content-center align-items-center vh-100 text-center">
+    <div class="overlay">
+        <img src="{{ url_for('static', filename='flight_data/ssgi.png') }}" alt="SSGI Logo" style="max-width: 250px;" class="mb-4">
+
+        <h1 class="mb-4 display-5 fw-bold text-dark">SPACE SCIENCE AND GEOSPATIAL INSTITUTE</h1>
+        <h2 class="mb-5 text-muted">የስፔስ ሳይንስ እና ጂኦስፓሻል ኢንስቲትዩት</h2>
+
+        <div>
+            <a href="{{ url_for('auth.signup') }}" class="btn btn-warning btn-lg me-3">Sign Up</a>
+            <a href="{{ url_for('auth.login') }}" class="btn navy-blue-btn btn-lg">Login</a>
+        </div>
+    </div>
+</div>
+{% endblock %}
