@@ -1,4 +1,4 @@
-# 🛰 Aerial Survey Flight Report System
+#  Aerial Survey Flight Report System
 
 This is a web-based Flight Report Submission and Monitoring System for the **Space Science and Geospatial Institute (SSGI)**. It enables aerial survey teams to submit detailed flight reports and view past submissions in a well-structured dashboard.
 
@@ -26,7 +26,7 @@ This is a web-based Flight Report Submission and Monitoring System for the **Spa
 
 ---
 
-## 🛠 Tech Stack
+##  Tech Stack
 
 - **Backend**: Flask (Python), SQLAlchemy, SQLite  
 - **Frontend**: HTML5, Bootstrap 5, JavaScript  
@@ -37,16 +37,11 @@ This is a web-based Flight Report Submission and Monitoring System for the **Spa
 ##  How to Run Locally
 
 ```bash
-# 1. Clone the repository
 git clone https://github.com/yourusername/aerial-survey-app.git
 cd aerial-survey-app
-
-# 2. Create virtual environment and install dependencies
 python -m venv venv
-source venv/bin/activate   # On Windows: venv\Scripts\activate
+source venv/bin/activate   
 pip install -r requirements.txt
-
-# 3. Run the application
 python app.py
 ```
 
