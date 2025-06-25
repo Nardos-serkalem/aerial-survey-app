@@ -4,12 +4,12 @@ This is a web-based Flight Report Submission and Monitoring System for the **Spa
 
 ---
 
-## 🚀 Features
+##  Features
 
-- 📝 **Flight Submission Form**  
+-  **Flight Submission Form**  
   Record all essential aerial survey flight data including aircraft info, camera settings, flight timings, and operator details.
 
-- 📊 **Dashboard Overview**  
+-  **Dashboard Overview**  
   Browse all submitted flights with full details in a responsive layout. Displays time summary and flight entry breakdown per record.
 
 - ⏱ **Flight Time Summary Calculations**  
@@ -18,7 +18,7 @@ This is a web-based Flight Report Submission and Monitoring System for the **Spa
   - Takeoff to Landing
   - Engine Start to Shutdown
 
-- 🔐 **Authentication**  
+-  **Authentication**  
   Secure access using Flask-Login to ensure only registered users can submit/view data.
 
 - 📡 **Real-time Updates**  
@@ -34,7 +34,7 @@ This is a web-based Flight Report Submission and Monitoring System for the **Spa
 - **Live updates (Optional)**: Flask-SocketIO  
 - **Database**: SQLite (default, can switch to PostgreSQL/MySQL)
 
-## 📦 How to Run Locally
+##  How to Run Locally
 
 ```bash
 # 1. Clone the repository
@@ -52,7 +52,7 @@ python app.py
 
 The app will run on `http://127.0.0.1:5000/`.
 
-## 🏢 Developed for
+##  Developed for
 
 **Space Science and Geospatial Institute (SSGI)**  
 Flight Data Management Division
